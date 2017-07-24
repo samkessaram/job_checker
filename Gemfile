@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-require 'rest-client'
-require 'nokogiri'
+gem 'rest-client'
+gem 'nokogiri'
