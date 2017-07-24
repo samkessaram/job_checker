@@ -59,6 +59,9 @@ def send_notification(jobs)
                 "<a href=\"https://www.cmec.ca#{job.attribute('href').content}\">#{job.content}</a>"
               end
 
+  p "https://api:key-9a8c049041e1851e5d6bf84d8e584846"\
+  "@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages"
+
   sent = RestClient.post "https://api:key-9a8c049041e1851e5d6bf84d8e584846"\
   "@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages",
   :from => "CMEC Notifier <mailgun@#{ENV["MAILGUN_DOMAIN"]}>",
