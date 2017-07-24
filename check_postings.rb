@@ -70,6 +70,7 @@ def send_notification(jobs)
   :subject => "#{num_of_jobs} New Job #{jobs_text} at CMEC",
   :html => "Hi Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><hr>Love,<br>Sam"
 
+  p sent
 end
 
 def run_script
