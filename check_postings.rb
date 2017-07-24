@@ -1,10 +1,10 @@
 require_relative 'config.rb'
 require 'csv'
-require 'restclient'
+require 'httparty'
 require 'nokogiri'
 
 def check_for_job_postings
-  page = RestClient.get 'https://www.cmec.ca/11/About/index.html'
+  page = HTTParty.get 'https://www.cmec.ca/11/About/index.html'
   body = page.body
   noko_body = Nokogiri::HTML(body)
   jobs = []
@@ -59,16 +59,15 @@ def send_notification(jobs)
                 "<a href=\"https://www.cmec.ca#{job.attribute('href').content}\">#{job.content}</a>"
               end
 
-  p "https://api:key-9a8c049041e1851e5d6bf84d8e584846"\
-  "@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages"
-
-  sent = RestClient.post "https://api:key-9a8c049041e1851e5d6bf84d8e584846"\
-  "@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages",
-  :from => "CMEC Notifier <mailgun@#{ENV["MAILGUN_DOMAIN"]}>",
-  :to => "dominique.fascinato@gmail.com",
-  :cc => "samkessaram@gmail.com",
-  :subject => "#{num_of_jobs} New Job #{jobs_text} at CMEC",
-  :html => "Hi Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><hr>Love,<br>Sam"
+  sent = HTTParty.post( 
+      "https://api:key-9a8c049041e1851e5d6bf84d8e584846@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages",
+      :body => {
+        :from => "CMEC Notifier <mailgun@#{ENV["MAILGUN_DOMAIN"]}>",
+        # :to => "dominique.fascinato@gmail.com",
+        :to => "samkessaram@gmail.com",
+        :subject => "#{num_of_jobs} New Job #{jobs_text} at CMEC",
+        :html => "Hi Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><hr>Love,<br>Sam" 
+      })
 end
 
 def run_script
