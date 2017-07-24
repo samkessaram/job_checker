@@ -1,8 +1,7 @@
 require_relative 'config.rb'
-require 'rest-client'
-require 'pry'
-require 'nokogiri'
 require 'CSV'
+require 'restclient'
+require 'nokogiri'
 
 def check_for_job_postings
   page = RestClient.get 'https://www.cmec.ca/11/About/index.html'
