@@ -1,5 +1,5 @@
 require_relative 'config.rb'
-require 'CSV'
+require 'csv'
 require 'restclient'
 require 'nokogiri'
 
