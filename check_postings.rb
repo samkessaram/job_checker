@@ -11,10 +11,7 @@ def connect_to_db
   host = db_parts[5]
   db = db_parts[7]
 
-  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PGconn.open(:host =>  host, :dbname => db, :user=> username, :password=> password)
-  rescue Exception => e
-    puts e.message
-    puts e.backtrace.inspect
+  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PGconn.open(:host =>  'localhost', :dbname => db, :user=> username, :password=> password)
 end
 
 
