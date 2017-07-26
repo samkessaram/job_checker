@@ -12,6 +12,9 @@ def connect_to_db
   db = db_parts[7]
 
   @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PGconn.open(:host =>  host, :dbname => db, :user=> username, :password=> password)
+  rescue Exception => e
+    puts e.message
+    puts e.backtrace.inspect
 end
 
 
@@ -74,8 +77,8 @@ def send_notification(jobs)
       "https://api:key-9a8c049041e1851e5d6bf84d8e584846@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages",
       :body => {
         :from => "CMEC Notifier <mailgun@#{ENV["MAILGUN_DOMAIN"]}>",
-        :to => "dominique.fascinato@gmail.com",
-        :cc => "samkessaram@gmail.com",
+        # :to => "dominique.fascinato@gmail.com",
+        :to => "samkessaram@gmail.com",
         :subject => "#{num_of_jobs} New Job #{jobs_text} at CMEC",
         :html => "Hi Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><hr>Love,<br>Sam" 
       })
@@ -84,11 +87,11 @@ end
 def run_script
   connect_to_db
   jobs = check_for_job_postings
+  p jobs
   jobs = filter_old_jobs(jobs)
 
   if !jobs.empty?
-    p jobs
-    send_notification(jobs)
+    # send_notification(jobs)
   end
 end
 
