@@ -4,7 +4,16 @@ require 'httparty'
 require 'nokogiri'
 require 'pry'
 
-@db = PG::Connection.open(:dbname => ENV['DATABASE_URL'])
+def connect_to_db
+  db_parts = ENV['DATABASE_URL'].split(/\/|:|@/)
+  username = db_parts[3]
+  password = db_parts[4]
+  host = db_parts[5]
+  db = db_parts[7]
+
+  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PG::Connection.open(:host =>  host, :dbname => db, :user=> username, :password=> password)
+end
+
 
 def check_for_job_postings
   page = HTTParty.get 'https://www.cmec.ca/11/About/index.html'
@@ -32,7 +41,7 @@ def filter_old_jobs(jobs)
   new_jobs = new_jobs.select do |job|
 
     href = job.attribute('href').content
-    unique = (@db.exec "SELECT * FROM cmec WHERE href = '#{href}'").values == []
+    unique = (@conn.exec "SELECT * FROM cmec WHERE href = '#{href}'").values == []
 
     if unique
       save_job(href)
@@ -47,7 +56,7 @@ end
 
 
 def save_job(href)
-  @db.exec "INSERT INTO cmec VALUES ('#{href}','#{Time.now}') "
+  @conn.exec "INSERT INTO cmec VALUES ('#{href}','#{Time.now}') "
 end
 
 
@@ -73,6 +82,7 @@ def send_notification(jobs)
 end
 
 def run_script
+  connect_to_db
   jobs = check_for_job_postings
   jobs = filter_old_jobs(jobs)
 
