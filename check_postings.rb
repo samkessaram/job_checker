@@ -72,10 +72,10 @@ def send_notification(jobs)
       "https://api:key-9a8c049041e1851e5d6bf84d8e584846@api.mailgun.net/v3/#{ENV["MAILGUN_DOMAIN"]}/messages",
       :body => {
         :from => "CMEC Notifier <mailgun@#{ENV["MAILGUN_DOMAIN"]}>",
-        # :to => "dominique.fascinato@gmail.com",
-        :to => "samkessaram@gmail.com",
+        :to => "dominique.fascinato@gmail.com",
+        :cc => "samkessaram@gmail.com",
         :subject => "#{num_of_jobs} New Job #{jobs_text} at CMEC",
-        :html => "Hi, Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><br>Love,<br>Sam" 
+        :html => "Hi, Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br>Love,<br>Sam" 
       })
 end
 
