@@ -2,7 +2,7 @@ require_relative 'config.rb'
 require 'pg'
 require 'httparty'
 require 'nokogiri'
-require 'pry'
+# require 'pry'
 
 def connect_to_db
   db_parts = ENV['DATABASE_URL'].split(/\/|:|@/)
@@ -88,7 +88,7 @@ def run_script
 
   if !jobs.empty?
     p jobs
-    # send_notification(jobs)
+    send_notification(jobs)
   end
 end
 
