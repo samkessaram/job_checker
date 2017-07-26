@@ -1,7 +1,10 @@
 require_relative 'config.rb'
-require 'csv'
+require 'pg'
 require 'httparty'
 require 'nokogiri'
+require 'pry'
+
+@db = PG::Connection.open(:dbname => ENV['DATABASE_URL'])
 
 def check_for_job_postings
   page = HTTParty.get 'https://www.cmec.ca/11/About/index.html'
@@ -21,31 +24,30 @@ end
 
 
 def filter_old_jobs(jobs)
+
   new_jobs = jobs
-  old_jobs = CSV.read('saved_jobs.csv',:encoding => 'ISO-8859-1')
 
   # ['JOB TITLE','JOB URL']
 
   new_jobs = new_jobs.select do |job|
-              duplicate = old_jobs.detect do |old_job|
-                            old_job[1] == job.attribute('href').content
-                          end
 
-              duplicate = !!duplicate
-              !duplicate
-            end
+    href = job.attribute('href').content
+    unique = (@db.exec "SELECT * FROM cmec WHERE href = '#{href}'").values == []
+
+    if unique
+      save_job(href)
+    end
+
+    unique
+
+  end
 
   new_jobs
 end
 
 
-def save_jobs(jobs)
-
-  jobs.each do |job|
-    CSV.open('saved_jobs.csv', 'ab') do |csv|
-      csv << [job.content,job.attribute('href').content]
-    end
-  end
+def save_job(href)
+  @db.exec "INSERT INTO cmec VALUES ('#{href}','#{Time.now}') "
 end
 
 
@@ -75,8 +77,8 @@ def run_script
   jobs = filter_old_jobs(jobs)
 
   if !jobs.empty?
-    save_jobs(jobs)
-    send_notification(jobs)
+    p jobs
+    # send_notification(jobs)
   end
 end
 
