@@ -2,7 +2,7 @@ require_relative 'config.rb'
 require 'pg'
 require 'httparty'
 require 'nokogiri'
-# require 'pry'
+require 'pry'
 
 def connect_to_db
   db_parts = ENV['DATABASE_URL'].split(/\/|:|@/)
@@ -10,8 +10,8 @@ def connect_to_db
   password = db_parts[4]
   host = db_parts[5]
   db = db_parts[7]
-
-  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PGconn.open(:host =>  'localhost', :dbname => db, :user=> username, :password=> password)
+  pry
+  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PGconn.open(:host =>  host, :dbname => db, :user=> username, :password=> password)
 end
 
 
