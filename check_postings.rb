@@ -10,7 +10,7 @@ def connect_to_db
   password = db_parts[4]
   host = db_parts[5]
   db = db_parts[7]
-  pry
+
   @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PGconn.open(:host =>  host, :dbname => db, :user=> username, :password=> password)
 end
 
@@ -77,18 +77,17 @@ def send_notification(jobs)
         # :to => "dominique.fascinato@gmail.com",
         :to => "samkessaram@gmail.com",
         :subject => "#{num_of_jobs} New Job #{jobs_text} at CMEC",
-        :html => "Hi Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><hr>Love,<br>Sam" 
+        :html => "Hi, Dom!<br>Something got posted on the CMEC site:<br><br>" + body_text.join('<br>') + "<br><br><br>Love,<br>Sam" 
       })
 end
 
 def run_script
   connect_to_db
   jobs = check_for_job_postings
-  p jobs
   jobs = filter_old_jobs(jobs)
 
   if !jobs.empty?
-    # send_notification(jobs)
+    send_notification(jobs)
   end
 end
 
