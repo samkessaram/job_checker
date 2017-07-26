@@ -11,7 +11,7 @@ def connect_to_db
   host = db_parts[5]
   db = db_parts[7]
 
-  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PG::Connection.open(:host =>  host, :dbname => db, :user=> username, :password=> password)
+  @conn = ENV['DATABASE_URL'] === 'dom_jobs' ? PG::Connection.open(:dbname => ENV['DATABASE_URL']) : PG::Connection.open(:host =>  'localhost', :dbname => db, :user=> username, :password=> password)
 end
 
 
